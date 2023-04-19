@@ -13,11 +13,11 @@ const Modal = ({ title, description }: ModalProps) => {
   const [timer, setTimer] = useState<number>(5);
   // активен ли сейчас таймер
   const [timerActivate, setTimerActivate] = useState<boolean>(false);
-  // timerId для остановки через clearInterval. мне кажется, что можно обойтись без него, потому что если условие не выполняется, то и таймер запущен не будет. если не использовать timerId, то можно сократить количество re-renderов, что позволит сэкономить память
-  const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout>>();
+  // timerId у таймера для остановки через clearInterval
+  const [timeoutId, setTimeoutId] = useState<ReturnType<typeof setTimeout>>();
 
   // в зависимости от состояния открывает / закрывает модальное окно
-  const onToggleModal = () => {
+  const onToggleModal = (): void => {
     if (!isConfirmed) {
       setIsOpen((isOpen) => !isOpen);
       setTimerActivate(true);
@@ -34,22 +34,25 @@ const Modal = ({ title, description }: ModalProps) => {
     if (isOpen && !timerActivate) {
       setIsOpen((isOpen) => !isOpen);
       setIsConfirmed(true);
-      alert("Действие выполнено");
+      setTimeoutId(setTimeout(() => alert("Действие выполнено"), 4));
     }
   };
 
   // логика по работе таймера
   useEffect(() => {
     if (isOpen && timer && timerActivate) {
-      setTimerId(
+      setTimeoutId(
         setTimeout(() => {
           setTimer(() => timer - 1);
         }, 1000)
       );
     } else {
       setTimerActivate(false);
-      clearTimeout(timerId);
     }
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [isOpen, timer, timerActivate]);
 
   return (
@@ -57,9 +60,11 @@ const Modal = ({ title, description }: ModalProps) => {
       <div className="modal__wrapper">
         {isOpen && (
           <div className="modal__item">
-            <span onClick={onToggleModal}>&#10006;</span>
-            <h2>{title}</h2>
-            <p>{description}</p>
+            <span className="modal__close" onClick={onToggleModal}>
+              &#10006;
+            </span>
+            <h2 className="modal__title">{title}</h2>
+            <p className="modal__descr">{description}</p>
             <div className="modal__btns">
               <Button
                 onClick={onConfirmedTerms}
@@ -71,9 +76,7 @@ const Modal = ({ title, description }: ModalProps) => {
             </div>
           </div>
         )}
-        <Button onClick={onToggleModal} className="modal__button">
-          Выполнить действие
-        </Button>
+        <Button onClick={onToggleModal}>Выполнить действие</Button>
       </div>
     </div>
   );

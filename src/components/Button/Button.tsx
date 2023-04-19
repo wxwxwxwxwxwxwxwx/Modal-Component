@@ -1,7 +1,7 @@
 import { ButtonProps } from "./Button.props";
 import classNames from "classnames";
 
-import "./Button.css";
+import "./Button.scss";
 
 const Button = ({
   className,

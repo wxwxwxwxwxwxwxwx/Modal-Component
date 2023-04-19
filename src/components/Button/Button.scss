@@ -1,4 +1,4 @@
-button {
+.button {
   background-color: #5652ab;
   border: none;
   padding: 15px 20px;
@@ -6,8 +6,15 @@ button {
   color: #fff;
   font-size: 14px;
   cursor: pointer;
+  transition: 0.3s all;
 }
 
 .disabled {
-  opacity: 0.8;
+  opacity: 0.75;
+}
+
+@media (max-width: 640px) {
+  .button {
+    padding: 12px 20px;
+  }
 }
