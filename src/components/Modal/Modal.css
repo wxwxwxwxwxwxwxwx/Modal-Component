@@ -1,0 +1,10 @@
+.modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal__button {
+  display: block;
+  margin-top: 40%;
+}
