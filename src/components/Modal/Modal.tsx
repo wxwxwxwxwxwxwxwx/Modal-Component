@@ -4,7 +4,7 @@ import { ModalProps } from "./Modal.props";
 
 import "./Modal.scss";
 
-const Modal = ({ title, description }: ModalProps) => {
+const Modal = ({ title, description }: ModalProps): JSX.Element => {
   // отображается ли сейчас модальное окно
   const [isOpen, setIsOpen] = useState<boolean>(false);
   // подтвердил ли пользователь особые условия
