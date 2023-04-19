@@ -11,14 +11,23 @@ const Modal = ({ title, description }: ModalProps) => {
   const [timerActivate, setTimerActivate] = useState<boolean>(false);
   const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout>>();
 
-  const onToggleOpen = (): void => {
-    setIsOpen((isOpen) => !isOpen);
-    setTimerActivate(false);
-
-    clearTimeout(timerId);
-
-    if (!isOpen && !timerActivate) {
+  const onToggleModal = () => {
+    if (!isConfirmed) {
+      setIsOpen((isOpen) => !isOpen);
+      setTimerActivate(true);
+    } else {
+      alert("Действие уже выполнено");
+    }
+    if (!isOpen && !timerActivate && !isConfirmed) {
       setTimer(5);
+    }
+  };
+
+  const onConfirmedTerms = (): void => {
+    if (isOpen && !timerActivate) {
+      setIsOpen((isOpen) => !isOpen);
+      setIsConfirmed(true);
+      alert("Действие выполнено");
     }
   };
 
@@ -31,32 +40,30 @@ const Modal = ({ title, description }: ModalProps) => {
       );
     } else {
       setTimerActivate(false);
+      clearTimeout(timerId);
     }
-  }, [timer, timerActivate]);
+  }, [isOpen, timer, timerActivate]);
 
   return (
     <div className="modal">
       <div className="modal__wrapper">
         {isOpen && (
           <div className="modal__item">
-            <span onClick={onToggleOpen}>&#10006;</span>
+            <span onClick={onToggleModal}>&#10006;</span>
             <h2>{title}</h2>
             <p>{description}</p>
             <div className="modal__btns">
-              <Button disabled={timerActivate ? true : false}>
+              <Button
+                onClick={onConfirmedTerms}
+                disabled={timerActivate ? true : false}
+              >
                 Подтвердить {timer ? `(${timer})` : null}
               </Button>
-              <Button onClick={onToggleOpen}>Отмена</Button>
+              <Button onClick={onToggleModal}>Отмена</Button>
             </div>
           </div>
         )}
-        <Button
-          onClick={() => {
-            onToggleOpen();
-            setTimerActivate(!timerActivate);
-          }}
-          className="modal__button"
-        >
+        <Button onClick={onToggleModal} className="modal__button">
           Выполнить действие
         </Button>
       </div>
