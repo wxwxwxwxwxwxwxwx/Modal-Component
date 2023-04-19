@@ -5,12 +5,18 @@ import { ModalProps } from "./Modal.props";
 import "./Modal.scss";
 
 const Modal = ({ title, description }: ModalProps) => {
+  // отображается ли сейчас модальное окно
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  // подтвердил ли пользователь особые условия
   const [isConfirmed, setIsConfirmed] = useState<boolean>(false);
+  // кол-во секунд в таймере обратного отсчета
   const [timer, setTimer] = useState<number>(5);
+  // активен ли сейчас таймер
   const [timerActivate, setTimerActivate] = useState<boolean>(false);
+  // timerId для остановки через clearInterval. мне кажется, что можно обойтись без него, потому что если условие не выполняется, то и таймер запущен не будет. если не использовать timerId, то можно сократить количество re-renderов, что позволит сэкономить память
   const [timerId, setTimerId] = useState<ReturnType<typeof setTimeout>>();
 
+  // в зависимости от состояния открывает / закрывает модальное окно
   const onToggleModal = () => {
     if (!isConfirmed) {
       setIsOpen((isOpen) => !isOpen);
@@ -23,6 +29,7 @@ const Modal = ({ title, description }: ModalProps) => {
     }
   };
 
+  // если пользователь нажал на кнопку "Подтвердить"
   const onConfirmedTerms = (): void => {
     if (isOpen && !timerActivate) {
       setIsOpen((isOpen) => !isOpen);
@@ -31,6 +38,7 @@ const Modal = ({ title, description }: ModalProps) => {
     }
   };
 
+  // логика по работе таймера
   useEffect(() => {
     if (isOpen && timer && timerActivate) {
       setTimerId(
